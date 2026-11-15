@@ -1,0 +1,48 @@
+# The 1 GB EBS volume shows up as /dev/xvdf (t2) or /dev/nvme1n1 (t3 / Nitro)
+- name: Detect the attached EBS data volume
+  ansible.builtin.shell: |
+    for d in /dev/nvme1n1 /dev/xvdf /dev/sdf; do
+      [ -b "$d" ] && echo "$d" && exit 0
+    done
+    exit 1
+  register: ebs_dev
+  changed_when: false
+  retries: 10
+  delay: 6
+  until: ebs_dev.rc == 0
+
+- name: Create ext4 filesystem (only if not formatted yet)
+  ansible.builtin.shell: blkid {{ ebs_dev.stdout }} || mkfs.ext4 -q {{ ebs_dev.stdout }}
+  register: mkfs
+  changed_when: "'ext4' not in mkfs.stdout"
+
+- name: Get UUID of the volume
+  ansible.builtin.command: blkid -s UUID -o value {{ ebs_dev.stdout }}
+  register: ebs_uuid
+  changed_when: false
+
+- name: Create mount point
+  ansible.builtin.file:
+    path: "{{ data_dir }}"
+    state: directory
+
+- name: Add to /etc/fstab (persistent across reboots)
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '\s{{ data_dir }}\s'
+    line: "UUID={{ ebs_uuid.stdout }} {{ data_dir }} ext4 defaults,nofail 0 2"
+
+- name: Mount the volume
+  ansible.builtin.shell: mountpoint -q {{ data_dir }} || mount {{ data_dir }}
+  changed_when: false
+
+- name: Create log directories on the EBS volume
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    mode: "0755"
+  loop:
+    - { path: "{{ data_dir }}/logs", owner: root }
+    - { path: "{{ data_dir }}/logs/app", owner: "1001" }   # container runs as uid 1001
+    - { path: "{{ data_dir }}/logs/nginx", owner: root }

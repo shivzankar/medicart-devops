@@ -1,0 +1,22 @@
+{
+  "agent": { "metrics_collection_interval": 60, "run_as_user": "root" },
+  "metrics": {
+    "namespace": "MediCart",
+    "append_dimensions": { "InstanceId": "${aws:InstanceId}" },
+    "metrics_collected": {
+      "mem":  { "measurement": ["mem_used_percent"] },
+      "disk": { "measurement": ["used_percent"], "resources": ["/", "{{ data_dir }}"] }
+    }
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          { "file_path": "{{ data_dir }}/logs/app/app.log",       "log_group_name": "/medicart/app",   "log_stream_name": "{instance_id}-app" },
+          { "file_path": "{{ data_dir }}/logs/nginx/access.log",  "log_group_name": "/medicart/nginx", "log_stream_name": "{instance_id}-access" },
+          { "file_path": "{{ data_dir }}/logs/nginx/error.log",   "log_group_name": "/medicart/nginx", "log_stream_name": "{instance_id}-error" }
+        ]
+      }
+    }
+  }
+}

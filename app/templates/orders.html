@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block content %}
+<h2>Orders</h2>
+{% if orders %}<table><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Time</th></tr>
+{% for o in orders %}<tr><td>{{ o.id }}</td><td>{{ o.customer }}</td><td>{{ o['items']|length }}</td><td>₹{{ '%.2f'|format(o.total) }}</td><td>{{ o.time }}</td></tr>{% endfor %}
+</table>{% else %}<p>No orders yet.</p>{% endif %}
+{% endblock %}

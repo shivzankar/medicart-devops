@@ -1,0 +1,36 @@
+- name: Update apt cache and install base packages
+  ansible.builtin.apt:
+    name: [curl, unzip, htop, tree, git, awscli, ufw, ca-certificates, gnupg]
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create devops user
+  ansible.builtin.user:
+    name: devops
+    groups: sudo
+    shell: /bin/bash
+    append: true
+
+- name: Create 1 GB swap file (t3.micro has only 1 GB RAM)
+  ansible.builtin.command: >
+    bash -c "fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+    && echo '/swapfile none swap sw 0 0' >> /etc/fstab"
+  args:
+    creates: /swapfile
+
+- name: Set timezone to Asia/Kolkata
+  ansible.builtin.command: timedatectl set-timezone Asia/Kolkata
+  changed_when: false
+
+- name: Firewall (ufw) - allow SSH and HTTP, then enable
+  ansible.builtin.shell: |
+    ufw allow 22/tcp
+    ufw allow 80/tcp
+    ufw --force enable
+    ufw status
+  register: ufw_out
+  changed_when: false
+
+- name: Show firewall status
+  ansible.builtin.debug:
+    var: ufw_out.stdout_lines

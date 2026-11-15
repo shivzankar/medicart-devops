@@ -1,0 +1,14 @@
+# Docker Swarm demo (Practical 11)
+#   docker swarm init
+#   docker build -t medicart:latest -f docker/Dockerfile .
+#   docker stack deploy -c docker/swarm-stack.yml medicart
+#   docker service ls ; docker service scale medicart_app=5 ; docker stack rm medicart
+version: "3.8"
+services:
+  app:
+    image: medicart:latest
+    ports: ["8080:5000"]
+    deploy:
+      replicas: 3
+      update_config: { parallelism: 1, delay: 5s }
+      restart_policy: { condition: on-failure }

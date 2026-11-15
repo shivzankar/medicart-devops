@@ -1,0 +1,9 @@
+#!/bin/bash
+# MediCart backup -> S3  (installed by Ansible, runs hourly via cron)
+set -euo pipefail
+STAMP=$(date +%Y%m%d-%H%M%S)
+ARCHIVE=/tmp/medicart-backup-$STAMP.tar.gz
+tar -czf "$ARCHIVE" -C / opt/medicart/app {{ data_dir | regex_replace('^/', '') }}/logs
+aws s3 cp "$ARCHIVE" "s3://{{ s3_bucket }}/backups/medicart-backup-$STAMP.tar.gz" --region {{ aws_region }}
+rm -f "$ARCHIVE"
+echo "$(date) backup $STAMP uploaded to s3://{{ s3_bucket }}/backups/" >> {{ data_dir }}/logs/backup.log

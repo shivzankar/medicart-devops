@@ -1,0 +1,21 @@
+# Practical 12 – simple Kubernetes Pod (bonus; runs on minikube)
+#   minikube image load medicart:latest
+#   kubectl apply -f k8s/pod.yaml ; kubectl get pods
+#   kubectl port-forward pod/medicart-pod 5000:5000   -> http://localhost:5000
+apiVersion: v1
+kind: Pod
+metadata:
+  name: medicart-pod
+  labels: { app: medicart }
+spec:
+  containers:
+    - name: medicart
+      image: medicart:latest
+      imagePullPolicy: IfNotPresent
+      ports: [{ containerPort: 5000 }]
+      resources:
+        requests: { cpu: 100m, memory: 128Mi }
+        limits:   { cpu: 250m, memory: 256Mi }
+      livenessProbe:
+        httpGet: { path: /health, port: 5000 }
+        initialDelaySeconds: 5

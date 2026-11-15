@@ -1,0 +1,19 @@
+- name: Download CloudWatch agent
+  ansible.builtin.get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+    dest: /tmp/amazon-cloudwatch-agent.deb
+
+- name: Install CloudWatch agent
+  ansible.builtin.apt:
+    deb: /tmp/amazon-cloudwatch-agent.deb
+
+- name: Write agent config
+  ansible.builtin.template:
+    src: cw-agent.json.j2
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/medicart.json
+
+- name: Start agent with config
+  ansible.builtin.command: >
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+    -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/medicart.json
+  changed_when: true

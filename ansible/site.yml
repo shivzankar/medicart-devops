@@ -1,0 +1,15 @@
+# Full configuration of the MediCart server (run after `terraform apply`)
+#   ansible-playbook site.yml
+- name: Configure and deploy MediCart
+  hosts: web
+  become: true
+  vars:
+    app_dir: /opt/medicart
+    data_dir: /data
+  roles:
+    - common       # Practical 9  : base setup (packages, users, swap, firewall)
+    - ebs          # Practical 6  : format + mount EBS volume at /data
+    - docker       # Practical 11 : install Docker engine + compose
+    - app          # Practical 10 : deploy website (Docker + Nginx)
+    - cloudwatch   # VLE 2        : ship logs/metrics to CloudWatch
+    - backup       # VLE 1        : hourly backup to S3

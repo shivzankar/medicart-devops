@@ -1,0 +1,8 @@
+# Quick connectivity test:  ansible-playbook ping.yml
+- name: Test connection
+  hosts: web
+  gather_facts: true
+  tasks:
+    - ansible.builtin.ping:
+    - ansible.builtin.debug:
+        msg: "Connected to {{ ansible_hostname }} running {{ ansible_distribution }} {{ ansible_distribution_version }}"

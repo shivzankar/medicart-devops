@@ -1,0 +1,15 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate*
+terraform/terraform.tfvars
+terraform/.terraform.lock.hcl
+# Secrets / generated
+ansible/medicart-key.pem
+ansible/inventory.ini
+scripts/*.pem
+scripts/.cli-infra.state
+*.pem
+# Python
+__pycache__/
+.pytest_cache/
+logs/

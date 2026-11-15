@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block content %}
+<h2>Your cart</h2>
+{% if items %}
+<table><tr><th>Product</th><th>Qty</th><th>Subtotal</th></tr>
+{% for i in items %}<tr><td>{{ i.name }}</td><td>{{ i.qty }}</td><td>₹{{ '%.2f'|format(i.subtotal) }}</td></tr>{% endfor %}
+<tr><th colspan="2">Total</th><th>₹{{ '%.2f'|format(total) }}</th></tr></table>
+<form method="post" action="/checkout" class="checkout">
+  <input name="name" placeholder="Your name" required><button>Place order</button>
+</form>
+{% else %}<p>Your cart is empty. <a href="/">Continue shopping</a></p>{% endif %}
+{% endblock %}

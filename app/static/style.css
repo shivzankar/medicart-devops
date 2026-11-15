@@ -1,0 +1,12 @@
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:#f4f7f6;color:#1d2b2a}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 32px;background:#0f766e;color:#fff}
+.brand{color:#fff;font-weight:700;font-size:1.4rem;text-decoration:none}nav a{color:#e6fffb;margin-left:20px;text-decoration:none}
+main{max-width:1000px;margin:24px auto;padding:0 16px}.hero{background:#ccfbf1;padding:24px;border-radius:12px;margin-bottom:24px}
+.hero h1{margin:0 0 6px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}.card h3{margin:8px 0}
+.tag{font-size:.75rem;background:#e0f2f1;color:#0f766e;padding:2px 8px;border-radius:99px}.price{font-size:1.2rem;font-weight:700;margin:4px 0}
+.stock{color:#64748b;font-size:.85rem}button{background:#0f766e;color:#fff;border:0;padding:8px 14px;border-radius:8px;cursor:pointer}
+button:hover{background:#115e59}table{width:100%;background:#fff;border-collapse:collapse;border-radius:12px;overflow:hidden}
+td,th{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left}.checkout{margin-top:16px;display:flex;gap:8px}
+input{padding:8px;border:1px solid #cbd5e1;border-radius:8px}.success,.error{background:#fff;padding:24px;border-radius:12px}
+footer{text-align:center;color:#64748b;font-size:.8rem;padding:24px}

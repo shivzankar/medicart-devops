@@ -1,0 +1,24 @@
+- name: Install backup script
+  ansible.builtin.template:
+    src: backup.sh.j2
+    dest: /usr/local/bin/medicart-backup.sh
+    mode: "0755"
+
+- name: Schedule hourly backup to S3
+  ansible.builtin.cron:
+    name: medicart-s3-backup
+    minute: "0"
+    job: /usr/local/bin/medicart-backup.sh
+
+- name: Run first backup now
+  ansible.builtin.command: /usr/local/bin/medicart-backup.sh
+  changed_when: true
+
+- name: List backups in S3
+  ansible.builtin.command: aws s3 ls s3://{{ s3_bucket }}/backups/ --region {{ aws_region }}
+  register: s3ls
+  changed_when: false
+
+- name: Show S3 backups
+  ansible.builtin.debug:
+    var: s3ls.stdout_lines
